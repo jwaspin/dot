@@ -1,0 +1,8 @@
+#!/bin/bash
+
+function dot() {
+    cd ~/dot/ &&
+    git pull &&
+    ./install.sh &&
+    cd ~
+}

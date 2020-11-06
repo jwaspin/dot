@@ -1,0 +1,163 @@
+" NOT Vi compatible
+set nocompatible
+
+""""""""""""""""""""""""
+" TERMINAL SETTINGS
+""""""""""""""""""""""""
+"
+set t_Co=256
+" Fast terminal connection
+set ttyfast 
+
+""""""""""""""""""""""""
+" PLUGINS
+""""""""""""""""""""""""
+" Pathogen
+execute pathogen#infect()
+filetype plugin indent on
+
+" FZF
+nmap <C-P> :Files<CR>z.
+command F Files
+
+" Windowswap
+let g:windowswap_map_keys = 0 "prevent default bindings
+nnoremap <silent> <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
+nnoremap <silent> <leader>pw :call WindowSwap#DoWindowSwap()<CR>
+nnoremap <silent> <leader>ww :call WindowSwap#EasyWindowSwap()<CR>"
+
+""""""""""""""""""""""""
+" VISUALS
+""""""""""""""""""""""""
+" Syntax (lexical) highlighting and color schemes
+syntax enable
+colorscheme onedark
+set background=dark
+
+" Line numbers
+set number relativenumber " set nu rnu
+set numberwidth=4
+
+" Highlight the whole line under the cursor
+set cursorline
+
+""""""""""""""""""""""""
+" SEARCHING
+""""""""""""""""""""""""
+" highlight search pattern
+set hlsearch
+
+" jump to matching bracket
+set showmatch
+
+" case insensitive searching
+set ignorecase
+" if ignorecase, then uppercase chars force case sensitive searching
+set smartcase
+
+" show the `best match so far' as search strings are typed:
+set incsearch
+
+" assume the /g flag on :s substitutions to replace all matches in a line:
+set gdefault
+
+""""""""""""""""""""""""
+" BEHAVIORS
+""""""""""""""""""""""""
+" Save last 500 lines of history
+set history=500
+
+" Tab completion COMMAND LINE (only)
+" list all matches:complete till longest common string,next full match
+set wildmode=list:longest,full
+
+" display the current mode and partially-typed commands in the status line:
+set showmode
+set showcmd
+
+" Allow bkspc to delete over auto-indent, line-breaks, and instert start
+set backspace=indent,eol,start " same as backspace=2
+
+" Always show the ruler with current position info
+set ruler
+
+" Indentation
+" Auto-indent with smarts
+set autoindent
+set smartindent
+"Set tab spacing to 4 
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
+set expandtab
+set shiftround
+
+" Code folding
+set nofoldenable
+set foldmethod=indent
+set foldlevel=2
+set foldclose=all
+
+" normally don't automatically format `text' as it is typed, IE only do this
+" with comments, at 80 characters:
+set formatoptions-=t
+set textwidth=80
+
+" in makefiles, don't expand tabs to spaces, since actual tab characters are
+" needed, and have indentation at 8 chars to be sure that all indents are tabs
+" (despite the mappings later):
+autocmd FileType make set noexpandtab shiftwidth=8
+
+" use "[RO]" for "[readonly]" to save space in the message line:
+set shortmess+=r
+set shortmess+=I
+
+""""""""""""""""""""""""
+" REMAP
+""""""""""""""""""""""""
+" Remap ESC to the quickly typed characters jk
+inoremap jk <esc>
+
+" Remap ; to : 
+nnoremap ; :
+
+command V :vert term
+
+" Pane navigation
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
+" remap j k and to treat 'false' new lines as new line, also keep center
+nnoremap j gjzz
+nnoremap k gkzz
+" Also do it for all the other stuff
+nnoremap G Gzz
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap * *zz
+nnoremap # #zz
+nnoremap g* g*zz
+nnoremap g# g#zz
+
+
+
+""""""""""""""""""""""""
+" TAB Bahavior
+""""""""""""""""""""""""
+inoremap <Tab> <C-T>
+inoremap <S-Tab> <C-D>
+
+fu! InsertTabWrapper(direction)
+  let char_before = col('.') - 1
+  if !char_before || getline('.')[char_before - 1] !~ '\k'
+    return "\<tab>"
+  elseif "backward" == a:direction
+    return "\<c-p>"
+  else
+    return "\<c-n>"
+  endif
+endfu
+inoremap <tab> <c-r>=InsertTabWrapper("forward")<cr>
+inoremap <s-tab> <c-r>=InsertTabWrapper("backward")<cr>

@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# Navigation & Terminal
+alias ..='cd ..'
+alias c='clear'
+alias ex='exit'
+alias mkd='mkdir -pv'
+alias ssdn='sudo shutdown -P now'
+
+alias pictrl='bash ~/rpi/bin/pictrl.sh'
+
+# List Directory Contents
+alias l='ls -l'
+alias ll='ls -alh'
+alias la='ls -A'
+
+# Clear Screen / Directory Contents Combo
+alias ct='c; tree'
+alias cl='c; ls -l'
+alias cls='c;ls'
+alias cll='c;ll'
+alias cla='c;la'
+alias cdc='cd;cls'
+alias cdd='cd ~/Documents;ls'
+alias cdp='cd ~/Documents/Charter/projects;ls'
+
+# Mods
+alias x='chmod +x'
+
+# VIM
+alias v='vim'
+alias vi='vim'
+
+# TMUX
+alias ts='tmux ls'
+alias tn='tmux new -s'
+alias ta='tmux a -t'
+
+# Python
+alias py='python3'
+alias pypip='pip3 install'
+
+# GIT
+alias gc='git clone'
+alias gs='git status'
+alias ga='git add'
+alias gp='git pull'
+alias gaa='git add --all'
+alias gcm='git commit -m'
+alias gpu='git push'
+alias gpom='gp && git push origin master' # git push origin master prefaced with git pull
+alias gu='gs && gp && gpu' # git update checks status, pulls, and pushes if needed
+
+# Vagrant
+#alias vu='vagrant up'
+#alias va='vagrant'
+#alias vss='vagrant ssh'
+#alias vs='vagrant status'
+#alias vb='vagrant box'
+#alias vhal='vagrant halt'
+#alias vsus='vagrant suspend'
+#alias vdes='vagrant destroy'
+#alias vini='vagrant init'
+
+# Network
+alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
+
+# Functions
+alias fz='fzf-tmux'
+
+inst() { 
+    platform='unknown'
+    unamestr=`uname`
+    if [[ "$unamestr" == 'Linux' ]]; then
+        platform='linux'
+    elif [[ "$unamestr" == 'Darwin' ]]; then
+        platform='mac'
+    fi
+
+    if [[ $platform == 'mac' ]]; then
+        brew install $1
+    else
+        sudo apt-get install -y $1
+    fi
+}
+
+sshfind() {
+    IP="$1"
+    nmap -Pn -p22 $IP | grep -B 4 open
+}
