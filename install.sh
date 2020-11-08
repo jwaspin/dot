@@ -42,6 +42,11 @@ setup_tmux () {
     sym_l tmux/tmux.conf ~/.tmux.conf 
 }
 
+setup_git () {
+    echo 'creating gitconfig link'
+    sym_l git/gitconfig ~/.gitconfig
+}
+
 setup_hammerspoon () {
     echo 'installing hammerspoon files'
     mkdir -p ~/.hammerspoon/Spoons
@@ -96,7 +101,7 @@ install_fzf () {
     if [ -d ~/.fzf ] ; then
         echo "fzf already installed"
     else
-        sym_l files/vim/fzf_functions ~/.fzf_functions &&
+        sym_l vim/fzf_functions ~/.fzf_functions &&
         git clone https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf &&
         git clone https://github.com/junegunn/fzf.vim.git ~/.vim/bundle/fzf.vim &&
         git clone --depth 1 http://github.com/junegunn/fzf.git ~/.fzf &&
@@ -104,7 +109,7 @@ install_fzf () {
     fi
 }
 
-setup_tmux && setup_bash && setup_vim && setup_vim_plugins
+setup_tmux && setup_git && setup_bash && setup_vim && setup_vim_plugins
 
 if [ $HAMMERSPOON -eq 1 ]; then
     echo HAMMERTIME

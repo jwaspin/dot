@@ -7,7 +7,7 @@ alias ex='exit'
 alias mkd='mkdir -pv'
 alias ssdn='sudo shutdown -P now'
 
-alias pictrl='bash ~/rpi/bin/pictrl.sh'
+alias pictrl='bash ~/.rpi/bin/pictrl.sh'
 
 # List Directory Contents
 alias l='ls -l'
