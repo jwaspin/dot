@@ -26,7 +26,7 @@ sym_l() {
     link=$2
 
     echo "creating symlink $link -> $src"
-    ln -s -f ~/dot/files/$src $link
+    ln -s -f ~/.dot/files/$src $link
 }
 
 setup_bash () {
