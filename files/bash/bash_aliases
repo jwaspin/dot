@@ -3,7 +3,6 @@
 # Navigation & Terminal
 alias ..='cd ..'
 alias c='clear'
-alias ex='exit'
 alias mkd='mkdir -pv'
 alias ssdn='sudo shutdown -P now'
 
