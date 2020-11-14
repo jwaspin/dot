@@ -1,6 +1,9 @@
 # Vim swap files
 *.swp
 
+# Node Modules
+**node_modules**
+
 # Prerequisites
 *.d
 
