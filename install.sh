@@ -1,122 +1,185 @@
 #!/bin/bash
 
+USAGE=1
+BASHFILES=0
+VIMFILES=0
+TMUXFILES=0
+GITCONFIG=0
 HAMMERSPOON=0
-FZF=0
+CLEAN=0
 
 usage() {
-    echo $0
+    printf "usage: ./install [-bvtghac]
+    This menu prints when no options are selected
+    -b  install bash config
+    -v  install vim config
+    -t  install tmux config
+    -g  install git config
+    -h  install hammerspoon config
+    -a  install all dot files
+    -c  cleanup dot files\n"
     exit
 }
 
-while getopts "hf" opt; do
+while getopts "bvtghac" opt; do
     case $opt in
-        h)
-            echo "Including hammerspoon"
-            HAMMERSPOON=1
+        b)
+            printf "Including bash\n"
+            BASHFILES=1
+            USAGE=0
             ;;
-        f)
-            echo "Including fuzzy finder"
-            FZF=1
+        v)
+            printf "Including vim\n"
+            VIMFILES=1
+            USAGE=0
+            ;;
+        t)
+            printf "Including tmux\n"
+            TMUXFILES=1
+            USAGE=0
+            ;;
+        g)
+            printf "Including git\n"
+            GITCONFIG=1
+            USAGE=0
+            ;;
+        h)
+            printf "Including hammerspoon\n"
+            HAMMERSPOON=1
+            USAGE=0
+            ;;
+        a)
+            printf "Including all dot files\n"
+            BASHFILES=1
+            VIMFILES=1
+            TMUXFILES=1
+            GITCONFIG=1
+            HAMMERSPOON=1
+            USAGE=0
+            ;;
+        c)
+            printf "Cleaning\n"
+            CLEAN=1
+            USAGE=0
             ;;
     esac
 done
+
+if [ $USAGE -eq 1 ]; then
+    usage
+fi
 
 sym_l() {
     src=$1
     link=$2
 
-    echo "creating symlink $link -> $src"
+    printf "creating symlink $link -> $src\n"
     ln -s -f ~/.dot/files/$src $link
 }
 
 setup_bash () {
-    echo 'creating bash links'
+    echo 'configuring bash'
     sym_l bash/bash_profile ~/.bash_profile
     sym_l bash/bash_aliases ~/.bash_aliases
     sym_l bash/bashrc ~/.bashrc
     sym_l bash/functions ~/.functions
 }
 
-setup_tmux () {
-    echo 'installing tmux files'
-    sym_l tmux/tmux.conf ~/.tmux.conf 
-}
-
-setup_git () {
-    echo 'creating gitconfig link'
-    sym_l git/gitconfig ~/.gitconfig
-}
-
-setup_hammerspoon () {
-    echo 'installing hammerspoon files'
-    mkdir -p ~/.hammerspoon/Spoons
-    sym_l hammerspoon/init.lua ~/.hammerspoon/init.lua 
-    sym_l hammerspoon/Spoons/WindowScreenLeftAndRight.spoon ~/.hammerspoon/Spoons/WindowScreenLeftAndRight.spoon
-}
-
-vim_folders () {
-    mkdir ~/.vim
-    mkdir -p ~/.vim/bundle
+clean_bash () {
+    rm ~/.bashrc ~/.bash_profile ~/.bash_aliases
+    rm -rf ~/.functions
 }
 
 setup_vim () {
-    echo 'installing vim files and plugins'
-    vim_folders
-    sym_l vim/vimrc ~/.vimrc
-    sym_l vim/colors ~/.vim
-    sym_l vim/autoload ~/.vim
-}
-
-setup_vim_plugins () {
-	# Auto close brackets
-    if [ -d ~/.vim/bundle/auto-pairs ] ; then
-		echo "Auto Pairs Plugin already installed."
-	else
-		git clone https://github.com/jiangmiao/auto-pairs.git ~/.vim/bundle/auto-pairs
-	fi
-
-    # Surround
-    if [ -d ~/.vim/bundle/vim-surround ] ; then
-        echo "Surround already installed."
+    echo 'configuring vim'
+    if [ -d ~/.vim ]; then
+        printf "vim already installed\n"
     else
-        git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
-    fi
-
-    # Windowswap
-    if [ -d ~/.vim/bundle/vim-windowswap ] ; then
-        echo "WindowSwap already installed."
-    else
-        git clone https://github.com/wesQ3/vim-windowswap.git ~/.vim/bundle/vim-windowswap
-    fi
-
-    # Peekaboo
-    if [ -d ~/.vim/bundle/vim-peekaboo ] ; then
-        echo "Peekaboo already installed."
-    else
-        git clone https://github.com/junegunn/vim-peekaboo ~/.vim/bundle/vim-peekaboo
+        printf "installing vim config\n"
+        sym_l vim/vimrc ~/.vimrc
+        mkdir ~/.vim
+        if [ -d ~/.vim ]; then
+            printf "linking vim colors\n"
+            sym_l vim/colors ~/.vim
+            sym_l vim/autoload ~/.vim
+        else
+            printf "\n\nsomething went wrong\n\n"
+        fi
     fi
 }
 
-install_fzf () {
-    if [ -d ~/.fzf ] ; then
-        echo "fzf already installed"
-    else
-        sym_l vim/fzf_functions ~/.fzf_functions &&
-        git clone https://github.com/junegunn/fzf.git ~/.vim/bundle/fzf &&
-        git clone https://github.com/junegunn/fzf.vim.git ~/.vim/bundle/fzf.vim &&
-        git clone --depth 1 http://github.com/junegunn/fzf.git ~/.fzf &&
-        yes | ~/.fzf/install
+clean_vim () {
+    rm ~/.vimrc
+    rm -rf ~/.vim
+}
+
+setup_tmux () {
+    echo 'configuring tmux'
+    sym_l tmux/tmux.conf ~/.tmux.conf 
+}
+
+clean_tmux () {
+    rm ~/.tmux.conf
+}
+
+setup_git () {
+    echo 'configuring git'
+    sym_l git/gitconfig ~/.gitconfig
+}
+
+clean_git () {
+    rm ~/.gitconfig
+}
+
+setup_hammerspoon () {
+    echo 'configuring hammerspoon'
+    mkdir -p ~/.hammerspoon/Spoons
+    if [ -d ~/.hammerspoon ]; then
+        sym_l hammerspoon/init.lua ~/.hammerspoon/init.lua 
+        if [ -d ~/.hammerspoon/Spoons ]; then
+            sym_l hammerspoon/Spoons/WindowScreenLeftAndRight.spoon \
+                    ~/.hammerspoon/Spoons/WindowScreenLeftAndRight.spoon
+        fi
     fi
 }
 
-setup_tmux && setup_git && setup_bash && setup_vim && setup_vim_plugins
+clean_hammerspoon () {
+    rm -rf ~/.hammerspoon
+}
 
-if [ $HAMMERSPOON -eq 1 ]; then
-    echo HAMMERTIME
-    setup_hammerspoon
+cleanup_symlinks() {
+    clean_bash
+    clean_vim
+    clean_tmux
+    clean_git
+    clean_hammerspoon
+}
+
+if [ $CLEAN -eq 1 ]; then
+    HAMMERSPOON=0
+    BASHFILES=0
+    VIMFILES=0
+    TMUXFILES=0
+    GITCONFIG=0
+    cleanup_symlinks
 fi
 
-if [ $FZF -eq 1 ]; then
-    echo FUZZYTIME
-    install_fzf
+if [ $BASHFILES -eq 1 ]; then
+    setup_bash
+fi
+
+if [ $VIMFILES -eq 1 ]; then
+    setup_vim
+fi
+
+if [ $TMUXFILES -eq 1 ]; then
+    setup_tmux
+fi
+
+if [ $GITCONFIG -eq 1 ]; then
+    setup_git
+fi
+
+if [ $HAMMERSPOON -eq 1 ]; then
+    setup_hammerspoon
 fi

@@ -12,12 +12,38 @@ set ttyfast
 """"""""""""""""""""""""
 " PLUGINS
 """"""""""""""""""""""""
-" Pathogen
-execute pathogen#infect()
-filetype plugin indent on
+
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" Plug
+call plug#begin('~/.vim/plugged')
+
+" auto-pairs
+Plug 'jiangmiao/auto-pairs'
+
+" surround
+Plug 'tpope/vim-surround'
+
+" windowswap
+Plug 'wesQ3/vim-windowswap'
+
+" peekaboo
+Plug 'junegunn/vim-peekaboo'
+
+" fuzzy finder
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'}
+
+call plug#end()
+
+" ===============
+" PLUGIN MAPPINGS
 
 " FZF
-nmap <C-P> :Files<CR>z.
+nmap <C-P> :Files<CR>
 command F Files
 
 " Windowswap
@@ -25,6 +51,8 @@ let g:windowswap_map_keys = 0 "prevent default bindings
 nnoremap <silent> <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
 nnoremap <silent> <leader>pw :call WindowSwap#DoWindowSwap()<CR>
 nnoremap <silent> <leader>ww :call WindowSwap#EasyWindowSwap()<CR>"
+
+" ===============
 
 """"""""""""""""""""""""
 " VISUALS
