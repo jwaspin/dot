@@ -100,6 +100,7 @@ setup_vim () {
         mkdir ~/.vim
         if [ -d ~/.vim ]; then
             printf "linking vim colors\n"
+            sym_l vim/ftplugin ~/.vim
             sym_l vim/colors ~/.vim
             sym_l vim/autoload ~/.vim
         else

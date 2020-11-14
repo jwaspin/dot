@@ -12,6 +12,7 @@ set ttyfast
 """"""""""""""""""""""""
 " PLUGINS
 """"""""""""""""""""""""
+:filetype plugin on
 
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -33,6 +34,12 @@ Plug 'wesQ3/vim-windowswap'
 
 " peekaboo
 Plug 'junegunn/vim-peekaboo'
+
+" polyglot
+Plug 'sheerun/vim-polyglot'
+
+" ale (used with eslint)
+Plug 'dense-analysis/ale'
 
 " fuzzy finder
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'}
