@@ -6,7 +6,7 @@ alias c='clear'
 alias mkd='mkdir -pv'
 alias ssdn='sudo shutdown -P now'
 
-alias pictrl='bash ~/.rpi/bin/pictrl.sh'
+alias pictrl='bash ~/.rpi/pictrl.sh'
 
 # List Directory Contents
 alias l='ls -l'
@@ -14,8 +14,9 @@ alias ll='ls -alh'
 alias la='ls -A'
 
 # Clear Screen / Directory Contents Combo
-alias ct='c; tree'
-alias cl='c; ls -l'
+alias ct='c;tree'
+alias clt='cl;tree'
+alias cl='c;ls -l'
 alias cls='c;ls'
 alias cll='c;ll'
 alias cla='c;la'
@@ -37,7 +38,6 @@ alias ta='tmux a -t'
 
 # Python
 alias py='python3'
-alias pypip='pip3 install'
 
 # GIT
 alias gc='git clone'
