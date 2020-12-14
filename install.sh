@@ -54,7 +54,6 @@ while getopts "bvtghac" opt; do
             VIMFILES=1
             TMUXFILES=1
             GITCONFIG=1
-            HAMMERSPOON=1
             USAGE=0
             ;;
         c)
