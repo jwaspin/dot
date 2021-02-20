@@ -29,6 +29,9 @@ Plug 'alvan/vim-closetag'
 " auto-pairs
 Plug 'jiangmiao/auto-pairs'
 
+" vim-javascript
+Plug 'pangloss/vim-javascript'
+
 " surround
 Plug 'tpope/vim-surround'
 
