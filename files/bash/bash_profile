@@ -23,4 +23,3 @@ if [ -f '/Users/jwaspin/google-cloud-sdk/path.bash.inc' ]; then . '/Users/jwaspi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/jwaspin/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/jwaspin/google-cloud-sdk/completion.bash.inc'; fi
-export PATH="/usr/local/opt/lua@5.3/bin:$PATH"
