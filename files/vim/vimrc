@@ -52,7 +52,7 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'}
 
 call plug#end()
 
-" ===============
+" ===================================
 " PLUGIN MAPPINGS
 
 " FZF
@@ -65,7 +65,12 @@ nnoremap <silent> <leader>yw :call WindowSwap#MarkWindowSwap()<CR>
 nnoremap <silent> <leader>pw :call WindowSwap#DoWindowSwap()<CR>
 nnoremap <silent> <leader>ww :call WindowSwap#EasyWindowSwap()<CR>"
 
-" ===============
+" ===================================
+""""""""""""""""""""""""
+" REACT
+""""""""""""""""""""""""
+
+let @r ="0dwOimport React from 'react';\n\nimport './\<ESC>pa.css'\n\nexport default function (){\n  return ();\n}\<ESC>2k3wPj0f(a\n\<ESC>O<div className='\<ESC>pa'>>  \<ESC>Gdd3kA"
 
 """"""""""""""""""""""""
 " VISUALS
