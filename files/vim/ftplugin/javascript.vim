@@ -8,11 +8,12 @@ set shiftwidth=2
 inoremap ;; <Esc>/<..><Enter>"_c4l
 
 " fast templates
-inoremap ;a async function <..>(<..>) {<Enter><..><Enter>}<esc>kkt>ca<
+inoremap ;a const <..> = (<..>) => {<Enter><..><Enter>}<esc>0kkt>ca<
+inoremap ;A async function <..>(<..>) {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;c console.log(`<..>`);<esc>0t>ca<
-inoremap ;C .catch((err) => {<Enter><..><Enter>})<esc>kt>ca<
-inoremap ;f function <..>(<..>) {<Enter><..><Enter>}<esc>kkt>ca<
-inoremap ;F for (let i = 0; i < <..>; i++) {<Enter><..><Enter>}<esc>kkt>ca<
+inoremap ;C .catch((err) => {<Enter><..><Enter>})<esc>0kt>ca<
+inoremap ;f function <..>(<..>) {<Enter><..><Enter>}<esc>0kkt>ca<
+inoremap ;F for (let i = 0; i < <..>; i++) {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;i import <..> from '<..>';<esc>0t>ca<
 inoremap ;J JSON.stringify(<..>, null, 2);<esc>0t>ca<
 inoremap ;r const <..> = require('<..>');<esc>0t>ca<
