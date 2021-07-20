@@ -7,4 +7,5 @@ inoremap ;; <Esc>/<..><Enter>"_c4l
 
 " fast templates
 inoremap ;g get:<Enter>tags:<Enter>- "<..>"<Enter>summary: <..><Enter>description: <..><esc>0kkt>ca<
+inoremap ;p parameters:<Enter>- in: path<Enter>name: <..><Enter>schema:<Enter>type: <..><Enter>required: <..><Enter>description: <..><esc>0kkkkt>ca<
 inoremap ;r responses:<Enter>'200':<Enter>description: <..><Enter>content:<Enter>application/json:<Enter>schema:<Enter>type: <..><esc>0kkkkt>ca<
