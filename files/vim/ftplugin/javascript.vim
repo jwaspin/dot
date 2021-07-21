@@ -8,7 +8,7 @@ set shiftwidth=2
 inoremap ;; <Esc>/<..><Enter>"_c4l
 
 " fast templates
-inoremap ;a const <..> = (<..>) => {<Enter><..><Enter>}<esc>0kkt>ca<
+inoremap ;a (<..>) => {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;A async function <..>(<..>) {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;c console.log(`<..>`);<esc>0t>ca<
 inoremap ;C .catch((err) => {<Enter><..><Enter>})<esc>0kt>ca<
