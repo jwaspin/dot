@@ -56,8 +56,8 @@ call plug#end()
 " PLUGIN MAPPINGS
 
 " FZF
-nmap <C-P> :Files<CR>
-command F Files
+nmap <C-P> :FZF<CR>
+"command F Files
 
 " Windowswap
 let g:windowswap_map_keys = 0 "prevent default bindings
