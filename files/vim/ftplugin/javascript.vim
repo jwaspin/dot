@@ -12,6 +12,7 @@ inoremap ;a (<..>) => {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;A async function <..>(<..>) {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;c console.log(`<..>`);<esc>0t>ca<
 inoremap ;C .catch((err) => {<Enter><..><Enter>})<esc>0kt>ca<
+inoremap ;e export default 
 inoremap ;f function <..>(<..>) {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;F for (let i = 0; i < <..>; i++) {<Enter><..><Enter>}<esc>0kkt>ca<
 inoremap ;i import <..> from '<..>';<esc>0t>ca<
