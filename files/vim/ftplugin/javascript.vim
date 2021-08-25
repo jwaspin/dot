@@ -20,4 +20,4 @@ inoremap ;J JSON.stringify(<..>, null, 2)<esc>0t>ca<
 inoremap ;r const <..> = require('<..>');<esc>0t>ca<
 inoremap ;R import React from 'react';<Enter><Enter>
 inoremap ;t .then((<..>) => {<Enter><..><Enter>});<esc>kkt>ca<
-inoremap ;` return ``;<esc>hhi<Enter><esc>
+inoremap ;` return ``;<esc>hi<Enter><esc>
