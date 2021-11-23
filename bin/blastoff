@@ -1,0 +1,22 @@
+#!/bin/bash
+
+SYS="/System/Applications/"
+ROOT="/Applications/"
+
+open_sys () {
+    open ${SYS}Mail.app
+    open ${SYS}Messages.app
+    open ${SYS}Podcasts.app
+    open ${SYS}Stickies.app
+}
+
+open_root () {
+    open ${ROOT}Slack.app
+    open ${ROOT}Trello.app
+    open ${ROOT}Firefox.app
+    open "${ROOT}Google Chrome.app"
+    open "${ROOT}1Password 7.app"
+}
+
+open_sys
+open_root
