@@ -4,19 +4,24 @@ SYS="/System/Applications/"
 ROOT="/Applications/"
 
 open_sys () {
-    open ${SYS}Mail.app
-    open ${SYS}Messages.app
-    open ${SYS}Podcasts.app
-    open ${SYS}Stickies.app
+    open "${SYS}$1"
 }
 
 open_root () {
-    open ${ROOT}Slack.app
-    open ${ROOT}Trello.app
-    open ${ROOT}Firefox.app
-    open "${ROOT}Google Chrome.app"
-    open "${ROOT}1Password 7.app"
+    open "${ROOT}$1"
 }
 
-open_sys
-open_root
+open_root_space () {
+    open "${ROOT}$1 $2"
+}
+
+open_sys Mail.app
+open_sys Messages.app
+open_sys Podcasts.app
+open_sys Stickies.app
+
+open_root Slack.app
+open_root Trello.app
+open_root Firefox.app
+open_root_space Google Chrome.app
+open_root_space 1Password 7.app
