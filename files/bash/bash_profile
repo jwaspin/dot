@@ -33,3 +33,8 @@ if [ -f '/Users/jwaspin/google-cloud-sdk/path.bash.inc' ]; then . '/Users/jwaspi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/jwaspin/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/jwaspin/google-cloud-sdk/completion.bash.inc'; fi
+
+# Check for Homebrew and setup environment
+if command -v brew >/dev/null 2>&1; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
