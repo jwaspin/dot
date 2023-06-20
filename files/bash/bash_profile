@@ -16,6 +16,11 @@ if [ -d "$HOME/.bin" ] ; then
     PATH="$HOME/.bin:$PATH"
 fi
 
+# set PATH so it includes Sencha Cmd if it exists
+if [ -d "$HOME/bin/Sencha/Cmd/7.5.1.20" ] ; then
+    PATH="$HOME/bin/Sencha/Cmd/7.5.1.20:$PATH"
+fi
+
 export EDITOR=vim
 
 # The next line updates PATH for the Google Cloud SDK.

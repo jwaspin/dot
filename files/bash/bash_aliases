@@ -1,4 +1,5 @@
 #!/bin/bash
+alias bla='blastoff && exit'
 
 # Navigation & Terminal
 alias ..='cd ..'
