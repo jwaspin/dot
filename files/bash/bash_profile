@@ -13,7 +13,12 @@ fi
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/.bin" ] ; then
-    PATH="$HOME/.bin:$PATH"
+    PATH="$HOME/bin/Sencha/Cmd:$HOME/.bin:$PATH"
+fi
+
+# add rbenv versions of ruby if available
+if [ -d "$HOME/.rbenv" ] ; then
+    PATH="$HOME/.rbenv/versions/3.2.2/bin:$PATH"
 fi
 
 export EDITOR=vim
