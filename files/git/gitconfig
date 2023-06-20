@@ -3,3 +3,5 @@
 [user]
 	name = Johnathan Aspinwall
 	email = jwaspin@gmail.com
+[init]
+	defaultBranch = main
