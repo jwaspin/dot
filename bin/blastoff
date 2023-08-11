@@ -15,8 +15,8 @@ open_root_space () {
     open "${ROOT}$1 $2"
 }
 
-open_root_space2 () {
-    open "${ROOT}$1 $2 $3"
+open_root_space5 () {
+    open "${ROOT}$1 $2 $3 $4 $5"
 }
 
 open_sys Calendar.app
@@ -32,7 +32,9 @@ open_root Trello.app
 open_root_space Google Chrome.app
 open_root_space 1Password 7.app
 
-open_root_space2 Visual Studio Code.app
+open_root_space5 Visual Studio Code - Insiders.app
+
+open "/Users/jwaspin/Applications/WebCatalog Apps/ChatGPT.app"
 
 ssh-add -l
 
