@@ -16,25 +16,20 @@ if [ -d "$HOME/.bin" ] ; then
     PATH="$HOME/bin/Sencha/Cmd:$HOME/.bin:$PATH"
 fi
 
-# add rbenv versions of ruby if available
+# add rbenv version of ruby if available
 if [ -d "$HOME/.rbenv" ] ; then
-    PATH="$HOME/.rbenv/versions/3.2.2/bin:$PATH"
-fi
-
-# set PATH so it includes Sencha Cmd if it exists
-if [ -d "$HOME/bin/Sencha/Cmd/7.5.1.20" ] ; then
-    PATH="$HOME/bin/Sencha/Cmd/7.5.1.20:$PATH"
+    PATH="$HOME/.rbenv/versions/2.7.7/bin:$PATH"
+    #PATH="$HOME/.rbenv/versions/3.2.2/bin:$PATH"
 fi
 
 export EDITOR=vim
+
+# Check for Homebrew and setup environment
+eval "$(/opt/homebrew/bin/brew shellenv)"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 # The next line updates PATH for the Google Cloud SDK.
 if [ -f '/Users/jwaspin/google-cloud-sdk/path.bash.inc' ]; then . '/Users/jwaspin/google-cloud-sdk/path.bash.inc'; fi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/Users/jwaspin/google-cloud-sdk/completion.bash.inc' ]; then . '/Users/jwaspin/google-cloud-sdk/completion.bash.inc'; fi
-
-# Check for Homebrew and setup environment
-if command -v brew >/dev/null 2>&1; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
