@@ -27,7 +27,6 @@ open_sys Reminders.app
 open_sys Stocks.app
 
 open_root Slack.app
-open_root Trello.app
 
 open_root_space Google Chrome.app
 open_root_space 1Password 7.app
