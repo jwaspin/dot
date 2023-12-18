@@ -3,5 +3,8 @@
 [user]
 	name = Johnathan Aspinwall
 	email = jwaspin@gmail.com
+	signingkey = 31C80D12EEACE948
 [init]
 	defaultBranch = main
+[commit]
+	gpgsign = true
