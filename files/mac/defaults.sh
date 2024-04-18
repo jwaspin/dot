@@ -20,3 +20,6 @@ defaults import com.apple.AppleMultitouchTrackpad "$TRACKPAD_SETTINGS_FILE"
 
 MOUSE_SETTINGS_FILE="${MAC_SETTINGS_PATH}/mouse_settings.plist"
 defaults import com.apple.driver.AppleHIDMouse "$MOUSE_SETTINGS_FILE"
+
+DOCK_SETTINGS_FILE="${MAC_SETTINGS_PATH}/dock_settings.plist"
+defaults import com.apple.dock "$DOCK_SETTINGS_FILE"
