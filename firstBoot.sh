@@ -9,6 +9,9 @@ USB_DRIVE_PATH="${1:-/Volumes/SKINNY}"
 echo "Installing Homebrew..."
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
+# Add Homebrew to the PATH
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # Check and install necessary packages from Brewfile located in the same directory
 if [[ ! -f "${USB_DRIVE_PATH}/dot/files/brew/Brewfile" ]]; then
     echo "Brewfile not found in ${USB_DRIVE_PATH}/dot/files/brew/"
