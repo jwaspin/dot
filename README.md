@@ -1,6 +1,14 @@
 # dot
 
-My personal dotfiles and configuration scripts for MacOS and Linux.
+Personal dotfiles and configuration scripts for MacOS and Linux.
+
+## Prerequisites
+
+Before running the installation, ensure the following:
+
+1.  **SSH Keys**: Configure ssh key for use with GitHub. The bootstrap scripts clone via SSH.
+2.  **macOS**: Install **Xcode Command Line Tools** (`xcode-select --install`).
+3.  **Linux**: Ensure `curl` and `sudo` are installed.
 
 ## Installation
 
@@ -34,6 +42,17 @@ curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-
 
 1.  Updates `apt` and installs `git`, `tmux`, `vim`, `python3`, `build-essential`, `curl`.
 2.  Runs the common Python installer to symlink configuration files.
+
+## Post-Installation
+
+After the bootstrap script completes:
+
+1.  **Configure Git User**: Update your git configuration with your actual name and email.
+    ```bash
+    git config --global user.name "Your Name"
+    git config --global user.email "your_email@example.com"
+    ```
+    _(Alternatively, edit `~/.gitconfig.local` if you use the include directive)_
 
 ## Structure
 

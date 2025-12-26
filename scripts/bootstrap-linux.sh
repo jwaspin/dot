@@ -2,7 +2,7 @@
 set -e
 
 DOTFILES_DIR="$HOME/dot"
-REPO_URL="https://github.com/jwaspin/dot.git"
+REPO_URL="git@github.com:jwaspin/dot.git"
 
 echo ">>> Starting Bootstrap for Linux (Debian/Ubuntu)..."
 
