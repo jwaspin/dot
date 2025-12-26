@@ -33,8 +33,9 @@ curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-
 
 The bootstrap script will install core dependencies (git, tmux, vim, python3) and set up dotfiles.
 
+### Install via curl
+
 ```bash
-# Install via curl
 curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-linux.sh | bash
 ```
 
