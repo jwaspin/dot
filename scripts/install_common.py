@@ -16,7 +16,6 @@ def install_common():
         "bash/bash_profile": ".bash_profile",
         "bash/bash_aliases": ".bash_aliases",
         "bash/bashrc": ".bashrc",
-        "bash/functions": ".functions",
         "git/gitconfig": ".gitconfig",
         "git/gitignore_global": ".gitignore_global",
         "tmux/tmux.conf": ".tmux.conf",

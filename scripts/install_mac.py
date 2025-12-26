@@ -56,15 +56,6 @@ def set_mac_defaults(repo_root):
     defaults("NSGlobalDomain", "AppleActionOnDoubleClick", "-string", "Minimize")
     defaults("NSGlobalDomain", "AppleInterfaceStyle", "-string", "Dark")
     
-    # Web Search (DuckDuckGo)
-    # Note: -dict-add is complex to handle with simple wrapper, using raw subprocess for this one
-    subprocess.run([
-        "defaults", "write", "NSGlobalDomain", "NSPreferredWebServices", 
-        "-dict-add", "NSWebServicesProviderWebSearch", 
-        "-dict", "NSDefaultDisplayName", "DuckDuckGo", 
-        "NSProviderIdentifier", "com.duckduckgo"
-    ])
-
     # Import Plists
     mac_files = repo_root / "files/mac"
     
