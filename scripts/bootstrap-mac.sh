@@ -1,5 +1,12 @@
+
 #!/bin/bash
 set -e
+
+# Ensure sudo password is cached
+if ! sudo -v; then
+    echo "!! Sudo is required to run this script. Exiting."
+    exit 1
+fi
 
 DOTFILES_DIR="$HOME/dot"
 REPO_URL="git@github.com:jwaspin/dot.git"
@@ -29,11 +36,10 @@ if ! xcode-select -p &> /dev/null; then
     exit 1
 fi
 
-# 2. Install Homebrew
+# 2. Install Homebrew (idempotent)
 if ! command -v brew &> /dev/null; then
     echo ">>> Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    
     # Add brew to path for this session
     if [ -f "/opt/homebrew/bin/brew" ]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
@@ -41,7 +47,13 @@ if ! command -v brew &> /dev/null; then
         eval "$(/usr/local/bin/brew shellenv)"
     fi
 else
-    echo ">>> Homebrew already installed."
+    echo ">>> Homebrew already installed. Skipping installation."
+    # Ensure brew is in PATH for this session
+    if [ -f "/opt/homebrew/bin/brew" ]; then
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    elif [ -f "/usr/local/bin/brew" ]; then
+        eval "$(/usr/local/bin/brew shellenv)"
+    fi
 fi
 
 # 3. Install Python

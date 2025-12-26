@@ -21,6 +21,14 @@ def install_mac():
     # 3. Homebrew Bundle
     print(">>> Running Brew Bundle...")
     brewfile = repo_root / "files/brew/Brewfile"
+
+    # Ensure 'brew bundle' is available (should be included with Homebrew core)
+    try:
+        subprocess.run(["brew", "bundle", "--help"], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    except Exception:
+        print("!! 'brew bundle' is not available. Please update Homebrew to the latest version.")
+        return
+
     if brewfile.exists():
         try:
             subprocess.run(["brew", "bundle", "--file", str(brewfile)], check=True)
