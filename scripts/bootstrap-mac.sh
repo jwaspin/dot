@@ -1,10 +1,28 @@
 #!/bin/bash
 set -e
 
+DOTFILES_DIR="$HOME/dot"
+REPO_URL="https://github.com/jwaspin/dot.git"
+
 echo ">>> Starting Bootstrap for Mac..."
+
+# 0. Ensure Dotfiles Repo is Cloned
+if [ ! -d "$DOTFILES_DIR" ]; then
+    echo ">>> Cloning dotfiles to $DOTFILES_DIR..."
+    if ! command -v git &> /dev/null; then
+        echo "!! git not found. Attempting to install Xcode Command Line Tools..."
+        xcode-select --install || true
+        echo "!! Please complete the Xcode installation and run this script again."
+        exit 1
+    fi
+    git clone "$REPO_URL" "$DOTFILES_DIR"
+else
+    echo ">>> Dotfiles already present at $DOTFILES_DIR"
+fi
 
 # 1. Install Xcode Command Line Tools
 if ! xcode-select -p &> /dev/null; then
+
     echo ">>> Installing Xcode Command Line Tools..."
     xcode-select --install
     echo "!! Please complete the Xcode installation dialog and run this script again."
@@ -34,16 +52,7 @@ else
     echo ">>> Python already installed."
 fi
 
-# 4. Clone Repository (if not running from it)
-REPO_DIR="$HOME/dot"
-if [ ! -d "$REPO_DIR" ]; then
-    echo ">>> Cloning dotfiles repository..."
-    # Assuming public or ssh key is set up
-    git clone https://github.com/jwaspin/dot.git "$REPO_DIR"
-else
-    echo ">>> Dotfiles repository exists at $REPO_DIR"
-fi
-
-# 5. Hand off to Python
+# 4. Hand off to Python
 echo ">>> Handing off to Python installer..."
-python3 "$REPO_DIR/scripts/install_mac.py"
+python3 "$DOTFILES_DIR/scripts/install_mac.py"
+
