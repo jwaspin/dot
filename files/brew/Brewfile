@@ -1,5 +1,4 @@
 tap "aws/tap"
-tap "homebrew/bundle"
 brew "openssl@3"
 brew "aws-sam-cli"
 brew "bash"
