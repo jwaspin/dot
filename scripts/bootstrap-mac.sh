@@ -23,8 +23,11 @@ if [ ! -d "$DOTFILES_DIR" ]; then
         exit 1
     fi
     git clone "$REPO_URL" "$DOTFILES_DIR"
+
 else
     echo ">>> Dotfiles already present at $DOTFILES_DIR"
+    echo ">>> Updating dotfiles repo..."
+    git -C "$DOTFILES_DIR" pull --ff-only || echo "!! Failed to update dotfiles repo. Continuing with existing files."
 fi
 
 # 1. Install Xcode Command Line Tools
