@@ -44,6 +44,11 @@ def install_mac():
     print(">>> Mac Installation Complete.")
 
 def set_mac_defaults(repo_root):
+    # Import WindowManager plist (for settings like 'Click wallpaper to show desktop')
+    other_settings_plist = mac_files / "other_settings.plist"
+    if other_settings_plist.exists():
+        print('>>> Importing WindowManager/other settings...')
+        subprocess.run(["defaults", "import", "com.apple.WindowManager", str(other_settings_plist)])
     # Helper to run defaults command
     def defaults(domain, key, type_flag, value):
         cmd = ["defaults", "write", domain, key, type_flag, str(value)]
