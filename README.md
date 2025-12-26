@@ -7,7 +7,9 @@ Personal dotfiles and configuration scripts for MacOS and Linux.
 Before running the installation, ensure the following:
 
 1.  **SSH Keys**: Configure ssh key for use with GitHub. The bootstrap scripts clone via SSH.
-2.  **macOS**: Install **Xcode Command Line Tools** (`xcode-select --install`).
+2.  **macOS**:
+    - Install Xcode from the App Store.
+    - Install **Xcode Command Line Tools** (`xcode-select --install`).
 3.  **Linux**: Ensure `curl` and `sudo` are installed.
 
 ## Installation
