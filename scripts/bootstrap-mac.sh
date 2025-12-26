@@ -40,6 +40,13 @@ if ! xcode-select -p &> /dev/null; then
 fi
 
 # 2. Install Homebrew (idempotent)
+# Try to add Homebrew to PATH if installed but not in PATH
+if [ -f "/opt/homebrew/bin/brew" ]; then
+    eval "$('/opt/homebrew/bin/brew' shellenv)"
+elif [ -f "/usr/local/bin/brew" ]; then
+    eval "$('/usr/local/bin/brew' shellenv)"
+fi
+
 if ! command -v brew &> /dev/null; then
     echo ">>> Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -51,12 +58,6 @@ if ! command -v brew &> /dev/null; then
     fi
 else
     echo ">>> Homebrew already installed. Skipping installation."
-    # Ensure brew is in PATH for this session
-    if [ -f "/opt/homebrew/bin/brew" ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [ -f "/usr/local/bin/brew" ]; then
-        eval "$(/usr/local/bin/brew shellenv)"
-    fi
 fi
 
 # 3. Install Python
