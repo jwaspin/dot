@@ -1,3 +1,15 @@
+### Ensure default shell is bash
+CURRENT_SHELL=$(dscl . -read /Users/"$USER" UserShell | awk '{print $2}')
+BASH_PATH=$(which bash)
+if [ "$CURRENT_SHELL" != "$BASH_PATH" ]; then
+    echo ">>> Changing default shell to bash ($BASH_PATH) for user $USER..."
+    if ! grep -q "$BASH_PATH" /etc/shells; then
+        echo "$BASH_PATH" | sudo tee -a /etc/shells
+    fi
+    chsh -s "$BASH_PATH"
+else
+    echo ">>> Default shell is already bash."
+fi
 
 #!/bin/bash
 set -e
