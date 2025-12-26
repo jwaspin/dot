@@ -39,22 +39,22 @@ if ! xcode-select -p &> /dev/null; then
     exit 1
 fi
 
-# 2. Install Homebrew (idempotent)
-# Try to add Homebrew to PATH if installed but not in PATH
-if [ -f "/opt/homebrew/bin/brew" ]; then
+# 2. Install Homebrew (robust for curl | bash)
+# Always add Homebrew to PATH if present, before checking/installing
+if [ -x "/opt/homebrew/bin/brew" ]; then
     eval "$('/opt/homebrew/bin/brew' shellenv)"
-elif [ -f "/usr/local/bin/brew" ]; then
+elif [ -x "/usr/local/bin/brew" ]; then
     eval "$('/usr/local/bin/brew' shellenv)"
 fi
 
 if ! command -v brew &> /dev/null; then
     echo ">>> Installing Homebrew..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    # Add brew to path for this session
-    if [ -f "/opt/homebrew/bin/brew" ]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)"
-    elif [ -f "/usr/local/bin/brew" ]; then
-        eval "$(/usr/local/bin/brew shellenv)"
+    # Add brew to path for this session after install
+    if [ -x "/opt/homebrew/bin/brew" ]; then
+        eval "$('/opt/homebrew/bin/brew' shellenv)"
+    elif [ -x "/usr/local/bin/brew" ]; then
+        eval "$('/usr/local/bin/brew' shellenv)"
     fi
 else
     echo ">>> Homebrew already installed. Skipping installation."
