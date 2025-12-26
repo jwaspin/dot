@@ -16,8 +16,9 @@ Before running the installation, ensure the following:
 
 The bootstrap script will install Xcode Command Line Tools, Homebrew, Python, and then set up all dotfiles and system preferences.
 
+### Install via curl
+
 ```bash
-# Install via curl
 curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-mac.sh | bash
 ```
 
