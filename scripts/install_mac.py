@@ -44,11 +44,16 @@ def install_mac():
     print(">>> Mac Installation Complete.")
 
 def set_mac_defaults(repo_root):
+
+    # Import Plists
+    mac_files = repo_root / "files/mac"
+
     # Import WindowManager plist (for settings like 'Click wallpaper to show desktop')
     other_settings_plist = mac_files / "other_settings.plist"
     if other_settings_plist.exists():
         print('>>> Importing WindowManager/other settings...')
         subprocess.run(["defaults", "import", "com.apple.WindowManager", str(other_settings_plist)])
+
     # Helper to run defaults command
     def defaults(domain, key, type_flag, value):
         cmd = ["defaults", "write", domain, key, type_flag, str(value)]
@@ -60,10 +65,7 @@ def set_mac_defaults(repo_root):
     defaults("NSGlobalDomain", "AppleShowAllExtensions", "-bool", "true")
     defaults("NSGlobalDomain", "AppleActionOnDoubleClick", "-string", "Minimize")
     defaults("NSGlobalDomain", "AppleInterfaceStyle", "-string", "Dark")
-    
-    # Import Plists
-    mac_files = repo_root / "files/mac"
-    
+
     # Dictionary
     dict_plist = mac_files / "dictionary_replacements.plist"
     if dict_plist.exists():
@@ -86,7 +88,7 @@ def set_mac_defaults(repo_root):
     dock_plist = mac_files / "dock_settings.plist"
     if dock_plist.exists():
         subprocess.run(["defaults", "import", "com.apple.dock", str(dock_plist)])
-    
+
     subprocess.run(["killall", "Dock"])
 
 if __name__ == "__main__":
