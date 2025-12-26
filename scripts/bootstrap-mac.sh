@@ -1,12 +1,25 @@
-### Ensure default shell is bash
-CURRENT_SHELL=$(dscl . -read /Users/"$USER" UserShell | awk '{print $2}')
-BASH_PATH=$(which bash)
-if [ "$CURRENT_SHELL" != "$BASH_PATH" ]; then
+
+#!/bin/bash
+set -e
+
+# Ensure sudo password is cached
+if ! sudo -v; then
+    echo "!! Sudo is required to run this script. Exiting."
+    exit 1
+fi
+
+# Ensure default shell is bash (after sudo)
+BASH_PATH="$(command -v bash)"
+if [ "$SHELL" != "$BASH_PATH" ]; then
     echo ">>> Changing default shell to bash ($BASH_PATH) for user $USER..."
-    if ! grep -q "$BASH_PATH" /etc/shells; then
+    if ! grep -qx "$BASH_PATH" /etc/shells; then
         echo "$BASH_PATH" | sudo tee -a /etc/shells
     fi
-    chsh -s "$BASH_PATH"
+    if chsh -s "$BASH_PATH" "$USER"; then
+        echo ">>> Default shell changed to bash. Please log out and log back in for the change to take effect."
+    else
+        echo "!! Failed to change default shell."
+    fi
 else
     echo ">>> Default shell is already bash."
 fi
