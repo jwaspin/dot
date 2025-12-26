@@ -1,0 +1,204 @@
+#!/bin/bash
+
+# Arrays of server names
+# declare -a SERVERS_ALL=("prodPi" "stagePi" "devPi1" "devPi2" "deskPi" 
+#                         "dbPi" "pihole1" "pihole2" "fractal")
+# declare -a SERVERS_DEV=("devPi1" "devPi2")
+# declare -a SERVERS_PIHOLE=("pihole1" "pihole2")
+# declare -a SERVERS_DOCKER=("devPi1" "devPi2" "prodPi" "stagePi" "dbPi")
+
+showHelp() {
+    echo "Usage: batchssh <command> <server_set> [options]"
+    echo
+    echo "server_set: Specify the set of servers to target (all, dev, pihole, docker)"
+    echo "command: Specify the command to execute (ping, update, displayHosts, dockerps, reboot)"
+    echo "options: Additional options specific to the command"
+}
+
+showCommandHelp() {
+    local command=$1
+    case $command in
+        "ping")
+            echo "Usage: batchssh ping <server_set>"
+            echo "Ping the specified servers in the server set."
+            ;;
+        "update")
+            echo "Usage: batchssh update <server_set>"
+            echo "Update the specified servers in the server set."
+            ;;
+        "displayHosts")
+            echo "Usage: batchssh displayHosts <server_set>"
+            echo "Display the /etc/hosts file of the specified servers in the server set."
+            ;;
+        "dockerps")
+            echo "Usage: batchssh dockerps <server_set> [-a]"
+            echo "List the running Docker containers on the specified servers in the server set."
+            echo "Options:"
+            echo "  -a     List all containers (including stopped ones)."
+            ;;
+        "reboot")
+            echo "Usage: batchssh reboot <server_set>"
+            echo "Reboot the specified servers in the server set."
+            ;;
+        "shutdown")
+            echo "Usage: batchssh shutdown <server_set>"
+            echo "Shutdown the specified servers in the server set."
+            ;;
+        *)
+            echo "Invalid command: $command"
+            showHelp
+            exit 1
+            ;;
+    esac
+}
+
+get_ip() {
+    local server=$1
+    # Use perl to parse the SSH configuration files
+    ip=$(perl -ne '
+        if (/Host\s+'$server'/) {
+            $found = 1;
+        } elsif ($found && /Hostname\s+(\S+)/) {
+            print "$1\n";
+            $found = 0;
+        }' ~/.ssh/dconf.d/*)
+    echo $ip
+}
+
+update() {
+    if pingRemote $server; then
+        echo ===========================
+        echo UPDATING: $server
+        echo ===========================
+        ssh $server "sudo apt update && sudo apt upgrade -y"
+        echo ===========================
+        echo
+    else
+        echo "Unable to reach $server. Skipping update."
+    fi
+}
+
+pingRemote() {
+    local server=$1
+    echo ===========================
+    echo PING: $server
+    echo ===========================
+    ping -c 1 $(get_ip $server)
+    return $?
+}
+
+displayHosts() {
+    if pingRemote $server; then
+        echo ===========================
+        echo Printing /etc/hosts for $server ...
+        echo ===========================
+        ssh $server "cat /etc/hosts"
+        echo ===========================
+        echo
+    else
+        echo "Unable to reach $server. Skipping."
+    fi
+}
+
+reboot() {
+    if pingRemote $server; then
+        echo ===========================
+        echo REBOOT: $server ...
+        echo ===========================
+        ssh $server "sudo reboot";
+        echo ===========================
+        echo
+    else
+        echo "Unable to reach $server. Skipping."
+    fi
+}
+
+shutdown() {
+    if pingRemote $server; then
+        echo ===========================
+        echo SHUTTING DOWN: $server ...
+        echo ===========================
+        ssh $server "sudo shutdown -P now"
+        echo ===========================
+        echo
+    else
+        echo "Unable to reach $server. Skipping shutdown."
+    fi
+}
+
+dockerps() {
+    local option=""
+    if [[ $1 == "-a" ]]; then
+        option="-a"
+    fi
+
+    if pingRemote $server; then
+        echo ===========================
+        echo docker ps $server ...
+        echo ===========================
+        ssh $server "docker ps $option"
+        echo ===========================
+        echo
+    else
+        echo "Unable to reach $server. Skipping."
+        echo
+    fi
+}
+
+updateHostname() {
+    if pingRemote $server; then
+        echo ===========================
+        echo UPDATING HOSTNAME: $server .........;
+        echo ===========================
+        ssh $server "sudo hostnamectl set-hostname $server"
+        ssh $server "sudo sed -i 's/^\(127.0.1.1\s\+\).*$/\1$server/' /etc/hosts"
+        echo ===========================
+        echo
+    else
+        echo "Unable to reach $server. Skipping hostname update."
+    fi
+}
+
+# Retrieve the server set, the command, and the options
+COMMAND=$1
+SERVER_SET=$2
+shift 2 # Shift the arguments to get the options
+
+# Check if a valid command is provided
+if [ -z "$COMMAND" ]; then
+    showHelp
+    exit 1
+fi
+
+# Display command-specific help if requested
+if [ "$SERVER_SET" == "help" ]; then
+    shift
+    showCommandHelp $COMMAND
+    exit 0
+fi
+
+# Choose the server array based on the server set parameter
+case $SERVER_SET in
+    "all") SERVERS=("${SERVERS_ALL[@]}") ;;
+    "dev") SERVERS=("${SERVERS_DEV[@]}") ;;
+    "pihole") SERVERS=("${SERVERS_PIHOLE[@]}") ;;
+    "docker") SERVERS=("${SERVERS_DOCKER[@]}") ;;
+    "help") showHelp; exit 0 ;;
+    *) echo "Invalid server set: $SERVER_SET"; showHelp; exit 1 ;;
+esac
+
+# Iterate over the servers
+for server in "${SERVERS[@]}"
+do
+    # Use a case statement to execute the appropriate command
+    case $COMMAND in
+        "ping") pingRemote $server ;;
+        "update") update $@ ;;
+        "displayHosts") displayHosts $@ ;;
+        "dockerps") dockerps $@ ;;
+        "reboot") reboot $@ ;;
+        "shutdown") shutdown ;;
+        "help") showHelp; exit 0 ;;
+        *) echo "Invalid command: $COMMAND"; showHelp; exit 1 ;;
+    esac
+done

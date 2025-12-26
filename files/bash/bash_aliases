@@ -1,0 +1,129 @@
+#!/bin/bash
+alias bla='blastoff && exit'
+
+# Navigation & Terminal
+alias ..='cd ..'
+alias c='clear'
+alias mkd='mkdir -pv'
+alias ssdn='sudo shutdown -P now'
+
+# List Directory Contents
+alias l='ls -l'
+alias ll='ls -alh'
+alias la='ls -A'
+alias lsd='ls -d */'
+
+# Clear Screen / Directory Contents Combo
+alias ct='c;tree'
+alias clt='cl;tree'
+alias cl='c;ls -l'
+alias cls='c;ls'
+alias cll='c;ll'
+alias cla='c;la'
+alias cld='c;lsd'
+alias cdc='cd;cls'
+
+# Mods
+alias x='chmod +x'
+
+# VIM
+alias v='vim'
+alias vi='vim'
+
+# TMUX
+alias ts='tmux ls'
+alias tn='tmux new -s'
+alias ta='tmux a -t'
+
+# Python
+alias py='python3'
+
+# GIT
+alias gc='git clone'
+alias gs='git status'
+alias ga='git add'
+alias gp='git pull --rebase'
+alias gaa='git add --all'
+alias gcm='git commit -m'
+alias gpu='git push'
+alias gpom='gp && git push origin HEAD' # git push origin main prefaced with git pull
+alias gu='gs && gp && gpu' # git update checks status, pulls, and pushes if needed
+
+# Docker
+alias di='docker images'
+alias dps='docker ps'
+alias dpsa='docker ps -a'
+alias drm='docker rm'
+alias drmi='docker rmi'
+alias ds='docker stop'
+
+# Docker Nuke: Stop/Remove containers and images based on level (ps, c, i)
+dnuke() {
+    local ids
+    case "$1" in
+        ps)
+            ids=$(docker ps -q)
+            [ -n "$ids" ] && docker stop $ids || echo "No running containers."
+            ;;
+        c)
+            dnuke ps
+            ids=$(docker ps -aq)
+            [ -n "$ids" ] && docker rm $ids || echo "No containers found."
+            ;;
+        i)
+            dnuke c
+            ids=$(docker images -aq)
+            [ -n "$ids" ] && docker rmi $ids || echo "No images found."
+            ;;
+        *)
+            echo "Usage: dnuke {ps|c|i}"
+            echo "  ps : Stop running containers"
+            echo "  c  : Stop & remove containers"
+            echo "  i  : Stop & remove containers & images"
+            ;;
+    esac
+}
+
+# Network
+alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
+
+# Functions
+alias fz='fzf-tmux'
+
+# Cross-platform install helper (Homebrew on macOS, apt-get on Linux)
+inst() {
+    if [[ "$(uname)" == 'Darwin' ]]; then
+        brew install "$1"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get install -y "$1"
+    else
+        echo "Unknown package manager. Cannot install $1"
+    fi
+}
+
+# Check if a specific IP has SSH (port 22) open, or scan local network if no IP provided
+sshfind() {
+    if [ -z "$1" ]; then
+        echo "Scanning local network for open SSH ports..."
+        local subnet
+        if [[ "$(uname)" == "Darwin" ]]; then
+            local ip=$(ipconfig getifaddr en0 || ipconfig getifaddr en1)
+            [ -z "$ip" ] && echo "Could not determine local IP." && return 1
+            subnet="${ip%.*}.0/24"
+        else
+            local ip=$(hostname -I 2>/dev/null | awk '{print $1}')
+            [ -z "$ip" ] && echo "Could not determine local IP." && return 1
+            subnet="${ip%.*}.0/24"
+        fi
+        echo "Targeting subnet: $subnet"
+        nmap -p 22 --open "$subnet"
+    else
+        IP="$1"
+        nmap -Pn -p22 "$IP" | grep -B 4 open
+    fi
+}
+
+# Create a directory and immediately change into it
+mkcd() {
+    mkdir -p "$1" && cd "$1"
+}

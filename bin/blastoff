@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# List of applications to launch
+apps=(
+    "Calendar"
+    "Mail"
+    "Messages"
+    "Notes"
+    "Reminders"
+    "Stocks"
+    "Slack"
+    "Google Chrome"
+)
+
+echo "🚀 Blasting off..."
+
+for app in "${apps[@]}"; do
+    echo "Opening $app..."
+    open -a "$app"
+done
+
+# Check loaded SSH keys
+ssh-add -l
+
+sleep 5

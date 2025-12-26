@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>autohide</key>
+    <integer>1</integer>
+    <key>largesize</key>
+    <integer>98</integer>
+    <key>last-analytics-stamp</key>
+    <array>
+        <string>734807115.7277631</string>
+    </array>
+    <key>lastShowIndicatorTime</key>
+    <real>719239473.976837</real>
+    <key>loc</key>
+    <string>en_US:(null)</string>
+    <key>magnification</key>
+    <integer>1</integer>
+    <key>minimize-to-application</key>
+    <integer>1</integer>
+    <key>mod-count</key>
+    <integer>194</integer>
+    <key>mru-spaces</key>
+    <integer>0</integer>
+    <key>persistent-apps</key>
+    <array>
+        <dict>
+            <key>GUID</key>
+            <integer>1023549839</integer>
+            <key>tile-data</key>
+            <dict>
+            </dict>
+            <key>tile-type</key>
+            <string>file-tile</string>
+        </dict>
+    </array>
+    <key>persistent-others</key>
+    <array>
+        <dict>
+            <key>GUID</key>
+            <integer>1023549849</integer>
+            <key>tile-data</key>
+            <dict>
+            </dict>
+            <key>tile-type</key>
+            <string>directory-tile</string>
+        </dict>
+    </array>
+    <key>recent-apps</key>
+    <array/>
+    <key>region</key>
+    <string>US</string>
+    <key>show-recents</key>
+    <integer>0</integer>
+    <key>tilesize</key>
+    <integer>45</integer>
+    <key>trash-full</key>
+    <integer>0</integer>
+    <key>version</key>
+    <integer>1</integer>
+    <key>wvous-br-corner</key>
+    <integer>1</integer>
+    <key>wvous-br-modifier</key>
+    <integer>0</integer>
+</dict>
+</plist>
