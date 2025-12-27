@@ -8,10 +8,17 @@ if ! sudo -v; then
     exit 1
 fi
 
-# Ensure default shell is bash (after sudo)
+# Ensure default login shell is bash
 BASH_PATH="$(command -v bash)"
-if [ "$SHELL" != "$BASH_PATH" ]; then
-    echo ">>> Changing default shell to bash ($BASH_PATH) for user $USER..."
+# Read the user's login shell from directory service (macOS)
+CURRENT_LOGIN_SHELL="$(dscl . -read /Users/$USER UserShell 2>/dev/null | awk '{print $2}')"
+# Fallback to $SHELL if dscl fails or returns empty
+if [ -z "$CURRENT_LOGIN_SHELL" ]; then
+    CURRENT_LOGIN_SHELL="$SHELL"
+fi
+
+if [ "$CURRENT_LOGIN_SHELL" != "$BASH_PATH" ]; then
+    echo ">>> Changing default login shell to bash ($BASH_PATH) for user $USER..."
     if ! grep -qx "$BASH_PATH" /etc/shells; then
         echo "$BASH_PATH" | sudo tee -a /etc/shells
     fi
@@ -21,16 +28,7 @@ if [ "$SHELL" != "$BASH_PATH" ]; then
         echo "!! Failed to change default shell."
     fi
 else
-    echo ">>> Default shell is already bash."
-fi
-
-#!/bin/bash
-set -e
-
-# Ensure sudo password is cached
-if ! sudo -v; then
-    echo "!! Sudo is required to run this script. Exiting."
-    exit 1
+    echo ">>> Default login shell is already bash."
 fi
 
 DOTFILES_DIR="$HOME/dot"
