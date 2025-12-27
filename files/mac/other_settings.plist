@@ -4,5 +4,7 @@
 <dict>
     <key>EnableStandardClickToShowDesktop</key>
     <false/>
+    <key>dragLock</key>
+    <string>threeFingerDrag</string>
 </dict>
 </plist>
