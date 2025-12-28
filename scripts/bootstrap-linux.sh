@@ -1,10 +1,18 @@
 #!/bin/bash
 set -e
 
-DOTFILES_DIR="$HOME/dot"
+DOT_DIR="$HOME/dot"
 REPO_URL="git@github.com:jwaspin/dot.git"
 
 echo ">>> Starting Bootstrap for Debian..."
+
+if [ -x "$(command -v apt-get)" ]; then
+    sudo apt-get update
+    sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl ca-certificates gnupg lsb-release
+else
+    echo "!! apt-get not found. This script currently supports Debian-based systems."
+    exit 1
+fi
 
 INSTALL_DOCKER="auto"
 
@@ -14,17 +22,13 @@ if [ -f /proc/device-tree/model ]; then
     arch=$(uname -m 2>/dev/null || true)
     if echo "$model" | grep -qi "raspberry" && echo "$arch" | grep -Eqi '^(arm|aarch64)'; then
         IS_RPI="true"
+        printf ">>> Raspberry Pi detected\n" > /dev/tty
     fi
 fi
 
 if [ "$INSTALL_DOCKER" = "auto" ]; then
     if [ -c /dev/tty ]; then
-        if [ "$IS_RPI" = "true" ]; then
-            printf ">>> Raspberry Pi detected — Docker is not recommended on Pi.\n" > /dev/tty
-            read -r -p "Install Docker anyway? [y/N]: " resp </dev/tty
-        else
-            read -r -p "Install Docker (recommended on non-Pi systems)? [y/N]: " resp </dev/tty
-        fi
+        read -r -p "Install Docker? [y/N]: " resp </dev/tty
         case "$resp" in
             [Yy]* ) INSTALL_DOCKER="yes" ;;
             * ) INSTALL_DOCKER="no" ;;
@@ -34,104 +38,60 @@ if [ "$INSTALL_DOCKER" = "auto" ]; then
     fi
 fi
 
-if [ "$IS_RPI" = "true" ]; then
-    PI_SUFFIX=" (detected Raspberry Pi)"
-else
-    PI_SUFFIX=""
-fi
-echo ">>> Docker install policy: ${INSTALL_DOCKER}${PI_SUFFIX}"
+echo ">>> Docker to be installed? ${INSTALL_DOCKER}"
 
-if [ ! -d "$DOTFILES_DIR" ]; then
-    echo ">>> Cloning dotfiles to $DOTFILES_DIR..."
-    if ! command -v git &> /dev/null; then
-        true
-    fi
-else
-    echo ">>> Dotfiles already present at $DOTFILES_DIR"
-    if command -v git >/dev/null 2>&1 && git -C "$DOTFILES_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-        echo ">>> Updating existing dotfiles repository..."
-        if ! (cd "$DOTFILES_DIR" && git fetch --all --prune && git pull --rebase --autostash); then
-            echo ">>> Warning: failed to automatically update $DOTFILES_DIR. You may need to run 'git -C $DOTFILES_DIR pull' manually." >&2
-        else
-            echo ">>> Dotfiles repository updated."
-        fi
-    else
-        echo ">>> $DOTFILES_DIR exists but is not a git repository or git is not available; skipping auto-update."
-    fi
+if [ ! -d "$DOT_DIR" ]; then
+    echo ">>> Cloning dot to $DOT_DIR..."
+    git clone "$REPO_URL" "$DOT_DIR"
 fi
 
-if [ -x "$(command -v apt-get)" ]; then
-    echo ">>> Updating apt and installing dependencies..."
-    for f in /etc/apt/sources.list.d/*; do
-        if [ -f "$f" ]; then
-            if grep -qi 'download.docker.com' "$f" 2>/dev/null; then
-                sudo rm -f "$f"
-            fi
-        fi
-    done
-    sudo sed -i.bak '/download.docker.com/d' /etc/apt/sources.list || true
-    sudo apt-get update
-    sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl \
-        ca-certificates gnupg lsb-release
-
-    if [ "${INSTALL_DOCKER}" = "no" ]; then
-        echo ">>> Skipping Docker install (policy: ${INSTALL_DOCKER})."
-    else
-        if ! command -v docker &> /dev/null; then
-            echo ">>> Installing Docker..."
-            sudo install -m 0755 -d /etc/apt/keyrings
-
-            DOCKER_DISTRO="debian"
-            DOCKER_BASE_URL="https://download.docker.com/linux/${DOCKER_DISTRO}"
-            curl -fsSL "${DOCKER_BASE_URL}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-            sudo chmod a+r /etc/apt/keyrings/docker.gpg
-
-            if [ -f /etc/os-release ]; then
-                . /etc/os-release
-                CODENAME="${VERSION_CODENAME:-$(lsb_release -cs)}"
-            else
-                CODENAME="$(lsb_release -cs)"
-            fi
-            RELEASE_URL="${DOCKER_BASE_URL}/dists/${CODENAME}/Release"
-            if ! curl -fsS --head "${RELEASE_URL}" >/dev/null 2>&1; then
-                echo ">>> Docker repository has no Release for '${CODENAME}', falling back to 'bookworm'"
-                CODENAME="bookworm"
-            fi
-
-            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] ${DOCKER_BASE_URL} ${CODENAME} stable" |
-                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-            sudo apt-get update
-            sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-            sudo systemctl enable --now docker || true
-            if [ -c /dev/tty ]; then
-                sudo docker run --rm hello-world || true
-            fi
-            sudo usermod -aG docker "$USER"
-            echo ">>> Added $USER to docker group; log out and back in to use docker without sudo."
-        else
-            echo ">>> Docker already installed."
-        fi
-    fi
-else
-    echo "!! apt-get not found. This script currently supports Debian-based systems."
-    exit 1
-fi
-
-if [ ! -d "$DOTFILES_DIR" ]; then
-    echo ">>> Cloning dotfiles to $DOTFILES_DIR..."
-    git clone "$REPO_URL" "$DOTFILES_DIR"
-fi
-
-# Link OS-specific bash configuration
-repo_root="$DOTFILES_DIR"
+repo_root="$DOT_DIR"
 ln -sfn "$repo_root/files/bash/linux/bashrc" "$HOME/.bashrc"
 ln -sfn "$repo_root/files/bash/linux/bash_profile" "$HOME/.bash_profile"
 ln -sfn "$repo_root/files/bash/linux/bash_aliases" "$HOME/.bash_aliases"
 echo ">>> Linked bash configs for Linux."
 
 echo ">>> Running Python installer..."
-python3 "$DOTFILES_DIR/scripts/install_common.py"
+python3 "$DOT_DIR/scripts/install_common.py"
+
+if [ "${INSTALL_DOCKER}" = "no" ]; then
+    echo ">>> Skipping Docker install (policy: ${INSTALL_DOCKER})."
+else
+    if ! command -v docker &> /dev/null; then
+        echo ">>> Installing Docker..."
+        sudo install -m 0755 -d /etc/apt/keyrings
+
+        DOCKER_DISTRO="debian"
+        DOCKER_BASE_URL="https://download.docker.com/linux/${DOCKER_DISTRO}"
+        curl -fsSL "${DOCKER_BASE_URL}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        sudo chmod a+r /etc/apt/keyrings/docker.gpg
+
+        if [ -f /etc/os-release ]; then
+            . /etc/os-release
+            CODENAME="${VERSION_CODENAME:-$(lsb_release -cs)}"
+        else
+            CODENAME="$(lsb_release -cs)"
+        fi
+        RELEASE_URL="${DOCKER_BASE_URL}/dists/${CODENAME}/Release"
+        if ! curl -fsS --head "${RELEASE_URL}" >/dev/null 2>&1; then
+            echo ">>> Docker repository has no Release for '${CODENAME}', falling back to 'bookworm'"
+            CODENAME="bookworm"
+        fi
+
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] ${DOCKER_BASE_URL} ${CODENAME} stable" |
+            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+        sudo apt-get update
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+        sudo systemctl enable --now docker || true
+        if [ -c /dev/tty ]; then
+            sudo docker run --rm hello-world || true
+        fi
+        sudo usermod -aG docker "$USER"
+        echo ">>> Added $USER to docker group; log out and back in to use docker without sudo."
+    else
+        echo ">>> Docker already installed."
+    fi
+fi
 
 echo ">>> Linux Bootstrap Complete!"
-
