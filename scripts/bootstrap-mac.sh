@@ -53,6 +53,13 @@ else
     git -C "$DOTFILES_DIR" pull --ff-only || echo "!! Failed to update dotfiles repo. Continuing with existing files."
 fi
 
+# Link macOS bash configuration
+repo_root="$DOTFILES_DIR"
+ln -sfn "$repo_root/files/bash/mac/bashrc" "$HOME/.bashrc"
+ln -sfn "$repo_root/files/bash/mac/bash_profile" "$HOME/.bash_profile"
+ln -sfn "$repo_root/files/bash/mac/bash_aliases" "$HOME/.bash_aliases"
+echo ">>> Linked bash configs for macOS."
+
 # 1. Install Xcode Command Line Tools
 if ! xcode-select -p &> /dev/null; then
 

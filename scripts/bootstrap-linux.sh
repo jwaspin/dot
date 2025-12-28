@@ -113,6 +113,13 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     git clone "$REPO_URL" "$DOTFILES_DIR"
 fi
 
+# Link OS-specific bash configuration
+repo_root="$DOTFILES_DIR"
+ln -sfn "$repo_root/files/bash/linux/bashrc" "$HOME/.bashrc"
+ln -sfn "$repo_root/files/bash/linux/bash_profile" "$HOME/.bash_profile"
+ln -sfn "$repo_root/files/bash/linux/bash_aliases" "$HOME/.bash_aliases"
+echo ">>> Linked bash configs for Linux."
+
 echo ">>> Running Python installer..."
 python3 "$DOTFILES_DIR/scripts/install_common.py"
 
