@@ -6,25 +6,7 @@ REPO_URL="git@github.com:jwaspin/dot.git"
 
 echo ">>> Starting Bootstrap for Debian..."
 
-if [ -x "$(command -v apt-get)" ]; then
-    sudo apt-get update
-    sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl ca-certificates gnupg lsb-release
-else
-    echo "!! apt-get not found. This script currently supports Debian-based systems."
-    exit 1
-fi
-
 INSTALL_DOCKER="auto"
-
-IS_RPI="false"
-if [ -f /proc/device-tree/model ]; then
-    model=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || true)
-    arch=$(uname -m 2>/dev/null || true)
-    if echo "$model" | grep -qi "raspberry" && echo "$arch" | grep -Eqi '^(arm|aarch64)'; then
-        IS_RPI="true"
-        printf ">>> Raspberry Pi detected\n" > /dev/tty
-    fi
-fi
 
 if [ "$INSTALL_DOCKER" = "auto" ]; then
     if [ -c /dev/tty ]; then
@@ -38,7 +20,23 @@ if [ "$INSTALL_DOCKER" = "auto" ]; then
     fi
 fi
 
-echo ">>> Docker to be installed? ${INSTALL_DOCKER}"
+if [ -x "$(command -v apt-get)" ]; then
+    sudo apt-get update
+    sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl ca-certificates gnupg lsb-release
+else
+    echo "!! apt-get not found. This script currently supports Debian-based systems."
+    exit 1
+fi
+
+IS_RPI="false"
+if [ -f /proc/device-tree/model ]; then
+    model=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || true)
+    arch=$(uname -m 2>/dev/null || true)
+    if echo "$model" | grep -qi "raspberry" && echo "$arch" | grep -Eqi '^(arm|aarch64)'; then
+        IS_RPI="true"
+        printf ">>> Raspberry Pi detected\n" > /dev/tty
+    fi
+fi
 
 if [ ! -d "$DOT_DIR" ]; then
     echo ">>> Cloning dot to $DOT_DIR..."
@@ -55,7 +53,7 @@ echo ">>> Running Python installer..."
 python3 "$DOT_DIR/scripts/install_common.py"
 
 if [ "${INSTALL_DOCKER}" = "no" ]; then
-    echo ">>> Skipping Docker install (policy: ${INSTALL_DOCKER})."
+    echo ">>> Skipping Docker install"
 else
     if ! command -v docker &> /dev/null; then
         echo ">>> Installing Docker..."
