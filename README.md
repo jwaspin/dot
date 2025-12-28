@@ -14,15 +14,31 @@ Before running the installation, ensure the following:
 
 ## Installation
 
-### macOS
+###
 
-The bootstrap script will install Xcode Command Line Tools, Homebrew, Python, and then set up all dotfiles and system preferences.
+Use the OS dispatcher to run the correct bootstrap for your machine:
 
-### Install via curl
+```bash
+curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap.sh | bash
+```
+
+Platform-specific scripts (run directly if you prefer):
+
+- macOS:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-mac.sh | bash
 ```
+
+- Linux:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-linux.sh | bash
+```
+
+### macOS
+
+The bootstrap script will install Xcode Command Line Tools, Homebrew, Python, and then set up all dotfiles and system preferences.
 
 **What it does:**
 
@@ -35,12 +51,6 @@ curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-
 ### Linux (Debian/Ubuntu)
 
 The bootstrap script will install core dependencies (git, tmux, vim, python3) and set up dotfiles.
-
-### Install via curl
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/jwaspin/dot/main/scripts/bootstrap-linux.sh | bash
-```
 
 **What it does:**
 
