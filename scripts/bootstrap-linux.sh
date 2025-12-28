@@ -7,7 +7,6 @@ REPO_URL="git@github.com:jwaspin/dot.git"
 echo ">>> Starting Bootstrap for Debian..."
 
 INSTALL_DOCKER="auto"
-
 if [ "$INSTALL_DOCKER" = "auto" ]; then
     if [ -c /dev/tty ]; then
         read -r -p "Install Docker? [y/N]: " resp </dev/tty
