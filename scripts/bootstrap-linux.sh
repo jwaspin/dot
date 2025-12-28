@@ -48,6 +48,16 @@ if [ ! -d "$DOTFILES_DIR" ]; then
     fi
 else
     echo ">>> Dotfiles already present at $DOTFILES_DIR"
+    if command -v git >/dev/null 2>&1 && git -C "$DOTFILES_DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+        echo ">>> Updating existing dotfiles repository..."
+        if ! (cd "$DOTFILES_DIR" && git fetch --all --prune && git pull --rebase --autostash); then
+            echo ">>> Warning: failed to automatically update $DOTFILES_DIR. You may need to run 'git -C $DOTFILES_DIR pull' manually." >&2
+        else
+            echo ">>> Dotfiles repository updated."
+        fi
+    else
+        echo ">>> $DOTFILES_DIR exists but is not a git repository or git is not available; skipping auto-update."
+    fi
 fi
 
 if [ -x "$(command -v apt-get)" ]; then
