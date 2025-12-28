@@ -52,12 +52,14 @@ fi
 
 if [ -x "$(command -v apt-get)" ]; then
     echo ">>> Updating apt and installing dependencies..."
-    # Remove any stale Docker apt source that points to the Ubuntu repo
-    if [ -f /etc/apt/sources.list.d/docker.list ]; then
-        if grep -q "download.docker.com/linux/ubuntu" /etc/apt/sources.list.d/docker.list 2>/dev/null; then
-            sudo rm -f /etc/apt/sources.list.d/docker.list
+    for f in /etc/apt/sources.list.d/*; do
+        if [ -f "$f" ]; then
+            if grep -qi 'download.docker.com' "$f" 2>/dev/null; then
+                sudo rm -f "$f"
+            fi
         fi
-    fi
+    done
+    sudo sed -i.bak '/download.docker.com/d' /etc/apt/sources.list || true
     sudo apt-get update
     sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl \
         ca-certificates gnupg lsb-release
@@ -72,8 +74,14 @@ if [ -x "$(command -v apt-get)" ]; then
             DOCKER_DISTRO="debian"
             DOCKER_BASE_URL="https://download.docker.com/linux/${DOCKER_DISTRO}"
             curl -fsSL "${DOCKER_BASE_URL}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+            sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-            CODENAME="$(lsb_release -cs)"
+            if [ -f /etc/os-release ]; then
+                . /etc/os-release
+                CODENAME="${VERSION_CODENAME:-$(lsb_release -cs)}"
+            else
+                CODENAME="$(lsb_release -cs)"
+            fi
             RELEASE_URL="${DOCKER_BASE_URL}/dists/${CODENAME}/Release"
             if ! curl -fsS --head "${RELEASE_URL}" >/dev/null 2>&1; then
                 echo ">>> Docker repository has no Release for '${CODENAME}', falling back to 'bookworm'"
@@ -85,7 +93,12 @@ if [ -x "$(command -v apt-get)" ]; then
 
             sudo apt-get update
             sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            sudo systemctl enable --now docker || true
+            if [ -c /dev/tty ]; then
+                sudo docker run --rm hello-world || true
+            fi
             sudo usermod -aG docker "$USER"
+            echo ">>> Added $USER to docker group; log out and back in to use docker without sudo."
         else
             echo ">>> Docker already installed."
         fi
