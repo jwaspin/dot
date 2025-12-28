@@ -49,6 +49,9 @@ Plug 'dense-analysis/ale'
 
 " fuzzy finder
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all'}
+ 
+" onedark colorscheme
+Plug 'joshdick/onedark.vim'
 
 call plug#end()
 
