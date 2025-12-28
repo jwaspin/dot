@@ -1,4 +1,5 @@
 #!/bin/bash
+#!/bin/bash
 set -e
 
 DOTFILES_DIR="$HOME/dot"
@@ -6,55 +7,99 @@ REPO_URL="git@github.com:jwaspin/dot.git"
 
 echo ">>> Starting Bootstrap for Linux (Debian/Ubuntu)..."
 
-# 0. Ensure Dotfiles Repo is Cloned
+INSTALL_DOCKER="auto"
+
+IS_RPI=false
+if [ -f /proc/device-tree/model ]; then
+    model=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || true)
+    if echo "$model" | grep -qi "raspberry"; then
+        IS_RPI=true
+    fi
+fi
+
+if [ "$INSTALL_DOCKER" = "auto" ]; then
+    if [ -c /dev/tty ]; then
+        if [ "$IS_RPI" = "true" ]; then
+            printf ">>> Raspberry Pi detected — Docker is not recommended on Pi.\n" > /dev/tty
+            read -r -p "Install Docker anyway? [y/N]: " resp </dev/tty
+        else
+            read -r -p "Install Docker (recommended on non-Pi systems)? [y/N]: " resp </dev/tty
+        fi
+        case "$resp" in
+            [Yy]* ) INSTALL_DOCKER="yes" ;;
+            * ) INSTALL_DOCKER="no" ;;
+        esac
+    else
+        INSTALL_DOCKER="no"
+    fi
+fi
+
+echo ">>> Docker install policy: ${INSTALL_DOCKER}${IS_RPI:+ (detected Raspberry Pi)}"
+
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo ">>> Cloning dotfiles to $DOTFILES_DIR..."
     if ! command -v git &> /dev/null; then
-         # Git should be installed in step 1, but if we run this via curl, we might need it earlier?
-         # Actually, step 1 installs git. So we should do step 1 first?
-         # But step 1 is "Update and Install Dependencies".
-         # If I curl | bash, I am running this script.
-         # So I can run step 1, THEN clone.
-         true
+        true
     fi
 else
     echo ">>> Dotfiles already present at $DOTFILES_DIR"
 fi
 
-# 1. Update and Install Dependencies
 if [ -x "$(command -v apt-get)" ]; then
     echo ">>> Updating apt and installing dependencies..."
     sudo apt-get update
     sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl \
         ca-certificates gnupg lsb-release
 
-    # Install Docker
-    if ! command -v docker &> /dev/null; then
-        echo ">>> Installing Docker..."
-        sudo install -m 0755 -d /etc/apt/keyrings
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-        echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | \
-        sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-        sudo usermod -aG docker "$USER"
+    if [ "${INSTALL_DOCKER}" = "no" ]; then
+        echo ">>> Skipping Docker install (policy: ${INSTALL_DOCKER})."
     else
-        echo ">>> Docker already installed."
+        if ! command -v docker &> /dev/null; then
+            echo ">>> Installing Docker..."
+            sudo install -m 0755 -d /etc/apt/keyrings
+
+            DOCKER_DISTRO="ubuntu"
+            if [ -f /etc/os-release ]; then
+                . /etc/os-release
+                if [ "${ID}" = "debian" ] || echo "${ID_LIKE}" | grep -qi debian; then
+                    DOCKER_DISTRO="debian"
+                elif [ "${ID}" = "ubuntu" ] || echo "${ID_LIKE}" | grep -qi ubuntu; then
+                    DOCKER_DISTRO="ubuntu"
+                else
+                    DOCKER_DISTRO="${ID}"
+                fi
+            fi
+
+            DOCKER_BASE_URL="https://download.docker.com/linux/${DOCKER_DISTRO}"
+            curl -fsSL "${DOCKER_BASE_URL}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+            CODENAME="$(lsb_release -cs)"
+            RELEASE_URL="${DOCKER_BASE_URL}/dists/${CODENAME}/Release"
+            if ! curl -fsS --head "${RELEASE_URL}" >/dev/null 2>&1; then
+                echo ">>> Docker repository has no Release for '${CODENAME}', falling back to 'bookworm'"
+                CODENAME="bookworm"
+            fi
+
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] ${DOCKER_BASE_URL} ${CODENAME} stable" |
+                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+            sudo apt-get update
+            sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+            sudo usermod -aG docker "$USER"
+        else
+            echo ">>> Docker already installed."
+        fi
     fi
 else
     echo "!! apt-get not found. This script currently supports Debian/Ubuntu based systems."
     exit 1
 fi
 
-# 2. Clone if not already done (now that we have git)
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo ">>> Cloning dotfiles to $DOTFILES_DIR..."
     git clone "$REPO_URL" "$DOTFILES_DIR"
 fi
 
-# 3. Run Common Installer
 echo ">>> Running Python installer..."
 python3 "$DOTFILES_DIR/scripts/install_common.py"
 
