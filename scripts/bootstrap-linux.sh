@@ -1,19 +1,19 @@
 #!/bin/bash
-#!/bin/bash
 set -e
 
 DOTFILES_DIR="$HOME/dot"
 REPO_URL="git@github.com:jwaspin/dot.git"
 
-echo ">>> Starting Bootstrap for Linux (Debian/Ubuntu)..."
+echo ">>> Starting Bootstrap for Debian..."
 
 INSTALL_DOCKER="auto"
 
-IS_RPI=false
+IS_RPI="false"
 if [ -f /proc/device-tree/model ]; then
     model=$(tr -d '\0' < /proc/device-tree/model 2>/dev/null || true)
-    if echo "$model" | grep -qi "raspberry"; then
-        IS_RPI=true
+    arch=$(uname -m 2>/dev/null || true)
+    if echo "$model" | grep -qi "raspberry" && echo "$arch" | grep -Eqi '^(arm|aarch64)'; then
+        IS_RPI="true"
     fi
 fi
 
@@ -34,7 +34,12 @@ if [ "$INSTALL_DOCKER" = "auto" ]; then
     fi
 fi
 
-echo ">>> Docker install policy: ${INSTALL_DOCKER}${IS_RPI:+ (detected Raspberry Pi)}"
+if [ "$IS_RPI" = "true" ]; then
+    PI_SUFFIX=" (detected Raspberry Pi)"
+else
+    PI_SUFFIX=""
+fi
+echo ">>> Docker install policy: ${INSTALL_DOCKER}${PI_SUFFIX}"
 
 if [ ! -d "$DOTFILES_DIR" ]; then
     echo ">>> Cloning dotfiles to $DOTFILES_DIR..."
@@ -58,18 +63,7 @@ if [ -x "$(command -v apt-get)" ]; then
             echo ">>> Installing Docker..."
             sudo install -m 0755 -d /etc/apt/keyrings
 
-            DOCKER_DISTRO="ubuntu"
-            if [ -f /etc/os-release ]; then
-                . /etc/os-release
-                if [ "${ID}" = "debian" ] || echo "${ID_LIKE}" | grep -qi debian; then
-                    DOCKER_DISTRO="debian"
-                elif [ "${ID}" = "ubuntu" ] || echo "${ID_LIKE}" | grep -qi ubuntu; then
-                    DOCKER_DISTRO="ubuntu"
-                else
-                    DOCKER_DISTRO="${ID}"
-                fi
-            fi
-
+            DOCKER_DISTRO="debian"
             DOCKER_BASE_URL="https://download.docker.com/linux/${DOCKER_DISTRO}"
             curl -fsSL "${DOCKER_BASE_URL}/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -91,7 +85,7 @@ if [ -x "$(command -v apt-get)" ]; then
         fi
     fi
 else
-    echo "!! apt-get not found. This script currently supports Debian/Ubuntu based systems."
+    echo "!! apt-get not found. This script currently supports Debian-based systems."
     exit 1
 fi
 
