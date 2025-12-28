@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Resolve the real path of this script (follow symlinks) then compute its directory.
+script_path="$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || printf '%s' "${BASH_SOURCE[0]}")"
+script_dir="$(cd "$(dirname "$script_path")" && pwd)"
 source "$script_dir/../common/bash_profile"
