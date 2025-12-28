@@ -52,6 +52,12 @@ fi
 
 if [ -x "$(command -v apt-get)" ]; then
     echo ">>> Updating apt and installing dependencies..."
+    # Remove any stale Docker apt source that points to the Ubuntu repo
+    if [ -f /etc/apt/sources.list.d/docker.list ]; then
+        if grep -q "download.docker.com/linux/ubuntu" /etc/apt/sources.list.d/docker.list 2>/dev/null; then
+            sudo rm -f /etc/apt/sources.list.d/docker.list
+        fi
+    fi
     sudo apt-get update
     sudo apt-get install -y git tmux vim python3 python3-pip build-essential curl \
         ca-certificates gnupg lsb-release
