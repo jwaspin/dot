@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-if [ -f "$HOME/dot/files/bash/common/bash_profile" ]; then
-    . "$HOME/dot/files/bash/common/bash_profile"
+if [ -f "$HOME/.dot/files/bash/common/bash_profile" ]; then
+    . "$HOME/.dot/files/bash/common/bash_profile"
 fi

@@ -6,6 +6,6 @@ if [ -x "/opt/homebrew/bin/brew" ]; then
 elif [ -x "/usr/local/bin/brew" ]; then
     eval "$(/usr/local/bin/brew shellenv)"
 fi
-if [ -f "$HOME/dot/files/bash/common/bash_profile" ]; then
-    . "$HOME/dot/files/bash/common/bash_profile"
+if [ -f "$HOME/.dot/files/bash/common/bash_profile" ]; then
+    . "$HOME/.dot/files/bash/common/bash_profile"
 fi

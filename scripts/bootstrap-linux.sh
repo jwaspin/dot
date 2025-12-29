@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-DOT_DIR="$HOME/dot"
+DOT_DIR="$HOME/.dot"
 REPO_URL="git@github.com:jwaspin/dot.git"
 
 echo ">>> Starting Bootstrap for Debian..."
@@ -38,7 +38,7 @@ if [ -f /proc/device-tree/model ]; then
 fi
 
 if [ ! -d "$DOT_DIR" ]; then
-    echo ">>> Cloning dot to $DOT_DIR..."
+    echo ">>> Cloning .dot to $DOT_DIR..."
     git clone "$REPO_URL" "$DOT_DIR"
 fi
 

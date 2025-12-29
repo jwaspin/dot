@@ -31,7 +31,7 @@ else
     echo ">>> Default login shell is already bash."
 fi
 
-DOTFILES_DIR="$HOME/dot"
+DOTFILES_DIR="$HOME/.dot"
 REPO_URL="git@github.com:jwaspin/dot.git"
 
 echo ">>> Starting Bootstrap for Mac..."

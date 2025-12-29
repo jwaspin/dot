@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
-if [ -f "$HOME/dot/files/bash/common/bash_aliases" ]; then
-	. "$HOME/dot/files/bash/common/bash_aliases"
+if [ -f "$HOME/.dot/files/bash/common/bash_aliases" ]; then
+	. "$HOME/.dot/files/bash/common/bash_aliases"
 fi
