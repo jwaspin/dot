@@ -4,6 +4,13 @@ Finder settings applied by `finder_defaults.sh`
 - Show all filename extensions.
 - Keep folders on top in Finder windows (and attempt on Desktop).
 - Show connected servers on the Desktop; do NOT show hard disks.
+- Enable three-finger drag on the trackpad (accessibility + trackpad prefs).
+
+Notes about three-finger drag:
+
+- The script enables `TrackpadThreeFingerDrag` for both built-in and Bluetooth trackpads
+  and sets the accessibility `threeFingerDrag` flag. Some macOS versions may require you
+  to log out and log back in (or reboot) for the change to fully take effect.
 - Disable creation of `.DS_Store` files on network volumes.
 - Show Finder path bar and status bar.
 
