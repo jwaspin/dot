@@ -3,7 +3,7 @@ Finder settings applied by `finder_defaults.sh`
 - New Finder windows open at your Home folder.
 - Show all filename extensions.
 - Keep folders on top in Finder windows (and attempt on Desktop).
-- Show hard disks and mounted servers on the Desktop.
+- Show connected servers on the Desktop; do NOT show hard disks.
 - Disable creation of `.DS_Store` files on network volumes.
 - Show Finder path bar and status bar.
 

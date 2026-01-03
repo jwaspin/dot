@@ -17,8 +17,9 @@ defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 defaults write com.apple.finder _FXSortFoldersFirst -bool true
 defaults write com.apple.finder _FXSortFoldersFirstOnDesktop -bool true || true
 
-# Show hard disks and connected servers on the Desktop
-defaults write com.apple.finder ShowHardDrivesOnDesktop -bool true
+# Show connected servers on the Desktop; do NOT show hard disks
+# By default macOS may not show hard disks — keep that deselected per your preference
+defaults write com.apple.finder ShowHardDrivesOnDesktop -bool false
 defaults write com.apple.finder ShowMountedServersOnDesktop -bool true
 
 # Do not create .DS_Store files on network volumes
