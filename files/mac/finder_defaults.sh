@@ -33,7 +33,6 @@ defaults write com.apple.finder ShowPathbar -bool true
 defaults write com.apple.AppleMultitouchTrackpad TrackpadThreeFingerDrag -bool true
 defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad TrackpadThreeFingerDrag -bool true
 defaults write com.apple.AppleMultitouchTrackpad Dragging -bool true
-defaults write com.apple.universalaccess threeFingerDrag -bool true
 
 # Make changes take effect
 killall Finder || true
