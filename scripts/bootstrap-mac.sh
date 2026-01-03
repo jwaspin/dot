@@ -60,6 +60,12 @@ ln -sfn "$repo_root/files/bash/mac/bash_profile" "$HOME/.bash_profile"
 ln -sfn "$repo_root/files/bash/mac/bash_aliases" "$HOME/.bash_aliases"
 echo ">>> Linked bash configs for macOS."
 
+# Apply Finder defaults if provided in the repo
+if [ -f "$repo_root/files/mac/finder_defaults.sh" ]; then
+    echo ">>> Applying macOS Finder defaults from $repo_root/files/mac/finder_defaults.sh"
+    bash "$repo_root/files/mac/finder_defaults.sh"
+fi
+
 # 1. Install Xcode Command Line Tools
 if ! xcode-select -p &> /dev/null; then
 
