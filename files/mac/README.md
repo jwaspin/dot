@@ -22,6 +22,17 @@ Notes:
   that updates `com.apple.sidebarlists` with `PlistBuddy` or by exporting
   a prepared plist and using `defaults import`.
 
+Power settings applied by `power_defaults.sh`:
+
+- AC block (runs on all machines): sets the Lock Screen/clock defaults from the screenshot and applies `pmset -c displaysleep 120 sleep 0`.
+- Battery block (runs when `system_profiler SPPowerDataType` reports a physical battery is installed): applies the 10-minute screensaver + 5-minute password delay values and `pmset -b displaysleep 20 sleep 15`, so laptops always get the battery profile while desktops skip it.
+
+Notes:
+
+- The battery block is skipped on desktops because they have no battery; the AC block still runs.
+- `pmset` requires `sudo`, so bootstrap already prompts for that before running this script.
+- Lock Screen toggles like showing usernames or password hints remain manual because they lack documented `defaults` keys.
+
 To apply manually (the bootstrap runs this automatically):
 
 ```bash

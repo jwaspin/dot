@@ -66,6 +66,12 @@ if [ -f "$repo_root/files/mac/finder_defaults.sh" ]; then
     bash "$repo_root/files/mac/finder_defaults.sh"
 fi
 
+# Apply mac power defaults if provided
+if [ -f "$repo_root/files/mac/power_defaults.sh" ]; then
+    echo ">>> Applying macOS power defaults from $repo_root/files/mac/power_defaults.sh"
+    bash "$repo_root/files/mac/power_defaults.sh"
+fi
+
 # 1. Install Xcode Command Line Tools
 if ! xcode-select -p &> /dev/null; then
 
